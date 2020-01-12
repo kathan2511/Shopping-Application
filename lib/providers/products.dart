@@ -51,7 +51,7 @@ class Products with ChangeNotifier {
   }
 
   Product findById(String id) {
-    return _items.firstWhere((prod) => prod.id == id);
+    return _items.firstWhere((prod) => prod.id == id); 
   }
 
   // void showFavoritesOnly() {
@@ -64,8 +64,34 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  void addProduct() {
-    // _items.add(value);
+  void addProduct(Product product) {
+    final newProduct = Product(
+      title: product.title,
+      imageUrl: product.imageUrl,
+      description: product.description,
+      price: product.price,
+      id: DateTime.now().toString(),
+    );
+    _items.add(newProduct);
+    _items.insert(0, newProduct);
+    notifyListeners();
+  }
+  void updateProduct(String id, Product newProduct ) 
+  {
+    final productIndex = _items.indexWhere((prod) => prod.id == id);
+    if(productIndex >=  0 )
+    {
+      items[productIndex] = newProduct;
+      notifyListeners();
+    }
+    else{
+      print('...');
+    }
+  }
+
+  void deleteProduct(String id)
+  {
+    _items.removeWhere((prod) => prod.id == id);
     notifyListeners();
   }
 }
