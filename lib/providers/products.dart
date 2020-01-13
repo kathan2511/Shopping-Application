@@ -68,23 +68,23 @@ class Products with ChangeNotifier {
 
   void addProduct(Product product) {
     const url ='https://shopping-application-481ec.firebaseio.com/products.json';
-    http.post(url,body: json.encode({
+    http.post(url, body: json.encode({
       'title': product.title,
       'description': product.description,
       'price': product.price,
       'imageUrl': product.imageUrl,  
       'isFavorite' : product.isFavorite,
-    }),);
-    final newProduct = Product(
+    }),).then((response) {
+      final newProduct = Product(
       title: product.title,
       imageUrl: product.imageUrl,
       description: product.description,
       price: product.price,
-      id: DateTime.now().toString(),
+      id: json.decode(response.body)['name'],
     );
     _items.add(newProduct);
-    _items.insert(0, newProduct);
     notifyListeners();
+  });
   }
   void updateProduct(String id, Product newProduct ) 
   {
@@ -94,6 +94,7 @@ class Products with ChangeNotifier {
       items[productIndex] = newProduct;
       notifyListeners();
     }
+    
     else{
       print('...');
     }
