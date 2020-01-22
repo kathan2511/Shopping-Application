@@ -26,12 +26,12 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleFavoriteStatus() async {
+  void toggleFavoriteStatus(String token) async {
     final oldStatus = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
     final url =
-        'https://shopping-application-481ec.firebaseio.com/products/$id.json';
+        'https://shopping-application-481ec.firebaseio.com/products/$id.json?auth=$token';
     try{
       final response = await patch(url,
         body: json.encode({

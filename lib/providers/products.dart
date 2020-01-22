@@ -33,15 +33,16 @@ class Products with ChangeNotifier {
   //   _showFavoritesOnly = false;
   //   notifyListeners();
   // }
+  final authToken;
+  Products(this.authToken,this._items);
 
   Future<void> fetchAndSetProducts() async {
-    const url =
-        'https://shopping-application-481ec.firebaseio.com/products.json';
+    final url =
+        'https://shopping-application-481ec.firebaseio.com/products.json?auth=$authToken';
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
-      if(extractedData == null)
-      {
+      if (extractedData == null) {
         return;
       }
       final List<Product> loadedProducts = [];
@@ -63,8 +64,8 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) async {
-    const url =
-        'https://shopping-application-481ec.firebaseio.com/products.json';
+    final url =
+        'https://shopping-application-481ec.firebaseio.com/products.json?auth=$authToken';
     try {
       final response = await http.post(
         url,
@@ -96,7 +97,7 @@ class Products with ChangeNotifier {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex >= 0) {
       final url =
-          'https://shopping-application-481ec.firebaseio.com/products/$id.json';
+          'https://shopping-application-481ec.firebaseio.com/products/$id.json?auth=$authToken';
       await http.patch(url,
           body: json.encode({
             'title': newProduct.title,
