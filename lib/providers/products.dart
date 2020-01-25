@@ -34,17 +34,23 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
   final authToken;
-  Products(this.authToken,this._items);
+  final userId;
+  Products(this.authToken, this._items, this.userId);
 
-  Future<void> fetchAndSetProducts() async {
-    final url =
-        'https://shopping-application-481ec.firebaseio.com/products.json?auth=$authToken';
+  Future<void> fetchAndSetProducts([bool filterByuser = false]) async {
+    final filterString = filterByuser ?  '&orderBy="creatorId"&equalTo="$userId"' : ''  ;
+    var url =
+        'https://shopping-application-481ec.firebaseio.com/products.json?auth=$authToken$filterString';
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       if (extractedData == null) {
         return;
       }
+      url =
+          'https://shopping-application-481ec.firebaseio.com/userFavorites/$userId.json?auth=$authToken';
+      final favoriteResponse = await http.get(url);
+      final favoriteData = json.decode(favoriteResponse.body);
       final List<Product> loadedProducts = [];
       extractedData.forEach((prodId, prodData) {
         loadedProducts.add(Product(
@@ -52,7 +58,8 @@ class Products with ChangeNotifier {
           title: prodData['title'],
           description: prodData['description'],
           price: prodData['price'],
-          isFavorite: prodData['isFavorite'],
+          isFavorite:
+              favoriteData == null ? false : favoriteData[prodId] ?? false,
           imageUrl: prodData['imageUrl'],
         ));
       });
@@ -74,7 +81,7 @@ class Products with ChangeNotifier {
           'description': product.description,
           'imageUrl': product.imageUrl,
           'price': product.price,
-          'isFavorite': product.isFavorite,
+          'creatorId' : userId,
         }),
       );
       final newProduct = Product(
@@ -114,7 +121,7 @@ class Products with ChangeNotifier {
 
   Future<void> deleteProduct(String id) async {
     final url =
-        'https://shopping-application-481ec.firebaseio.com/products/$id.json';
+        'https://shopping-application-481ec.firebaseio.com/products/$id.json?auth=$authToken';
     final exhistingProductIndex = _items.indexWhere((prod) => prod.id == id);
     var exhistingProduct = _items[exhistingProductIndex];
     _items.removeAt(exhistingProductIndex);

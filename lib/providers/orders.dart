@@ -40,7 +40,7 @@ class Orders with ChangeNotifier {
       loadedOrders.add(
         OrderItem(
             id: orderId,
-            amount: orderData['amount'],
+            amount: double.parse(orderData['amount']) ,
             dateTime: DateTime.parse(
               orderData['dateTime'],
             ),
