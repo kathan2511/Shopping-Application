@@ -9,6 +9,9 @@ class Product with ChangeNotifier {
   final String description;
   final double price;
   final String imageUrl;
+  final String imageUrl2;
+  final String imageUrl3;
+
   bool isFavorite;
 
   Product({
@@ -17,35 +20,33 @@ class Product with ChangeNotifier {
     @required this.description,
     @required this.price,
     @required this.imageUrl,
+    this.imageUrl2,
+    this.imageUrl3,
     this.isFavorite = false,
   });
 
-  void _setFavoriteValue(bool newValue)
-  {
+  void _setFavoriteValue(bool newValue) {
     isFavorite = newValue;
     notifyListeners();
   }
 
-  void toggleFavoriteStatus(String token,String userId) async {
+  void toggleFavoriteStatus(String token, String userId) async {
     final oldStatus = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
-    final url = 
+    final url =
         'https://shopping-application-481ec.firebaseio.com/userFavorites/$userId/$id.json?auth=$token';
-    try{
+    try {
       final response = await put(url,
-        body: json.encode({
-          'isFavorite': isFavorite,
-        }));
-
-        if(response.statusCode > 400 )
-    {
+          body: json.encode({
+            'isFavorite': isFavorite,
+          }));
+      if (response.statusCode > 400) {
         _setFavoriteValue(oldStatus);
-    }
-
-    }
-    catch(error){
+      }
+    } catch (error) {
       print(error);
       _setFavoriteValue(oldStatus);
-    }  }
+    }
+  }
 }

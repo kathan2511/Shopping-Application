@@ -14,19 +14,26 @@ class UserProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final scaffold = Scaffold.of(context);
     return ListTile(
+      
       title: Text(title),
       leading: CircleAvatar(
-        backgroundImage: NetworkImage(imageUrl),
+        child: Image.network(imageUrl.toString()),
       ),
       trailing: Container(
-        width: 100,
+        width: 150,
         child: Row(
           children: <Widget>[
+             IconButton(
+              icon: Icon(Icons.remove_red_eye),
+              onPressed: () {
+                
+              },
+              color: Theme.of(context).primaryColor,
+            ),
             IconButton(
               icon: Icon(Icons.edit),
               onPressed: () {
-                Navigator.of(context)
-                    .pushNamed(EditProductScreen.routeName, arguments: id);
+                
               },
               color: Theme.of(context).primaryColor,
             ),

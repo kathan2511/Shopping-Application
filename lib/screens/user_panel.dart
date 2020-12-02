@@ -7,20 +7,21 @@ import '../widgets/badge.dart';
 import '../providers/cart.dart';
 import './cart_screen.dart';
 import '../providers/products.dart';
-import 'edit_products_screen.dart';
+
+
 
 enum FilterOptions {
   Favorites,
   All,
 }
 
-class ProductsOverviewScreen extends StatefulWidget {
-  static const routeName = '/products-ovreview';
+class UserPanel extends StatefulWidget {
+  static const routeName = '/userpanel';
   @override
-  _ProductsOverviewScreenState createState() => _ProductsOverviewScreenState();
+  _UserPanelState createState() => _UserPanelState();
 }
 
-class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
+class _UserPanelState extends State<UserPanel> {
   var _showOnlyFavorites = false;
   var _isInit = true;
   var _isLoading = false;
@@ -53,12 +54,6 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context).pushNamed(EditProductScreen.routeName);
-          },
-          child: Icon(Icons.add),
-          backgroundColor: Colors.purple),
       appBar: AppBar(
         title: Text('MyShop'),
         actions: <Widget>[
@@ -76,17 +71,30 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
               Icons.more_vert,
             ),
             itemBuilder: (_) => [
-              PopupMenuItem(
-                child: Text('Only Favorites'),
-                value: FilterOptions.Favorites,
-              ),
-              PopupMenuItem(
-                child: Text('Show All'),
-                value: FilterOptions.All,
-              ),
-            ],
+                  PopupMenuItem(
+                    child: Text('Only Favorites'),
+                    value: FilterOptions.Favorites,
+                  ),
+                  PopupMenuItem(
+                    child: Text('Show All'),
+                    value: FilterOptions.All,
+                  ),
+                ],
           ),
-          
+          Consumer<Cart>(
+            builder: (_, cart, ch) => Badge(
+                  child: ch,
+                  value: cart.itemCount.toString(),
+                ),
+            child: IconButton(
+              icon: Icon(
+                Icons.shopping_cart,
+              ),
+              onPressed: () {
+                Navigator.of(context).pushNamed(CartScreen.routeName);
+              },
+            ),
+          ),
         ],
       ),
       drawer: AppDrawer(),
